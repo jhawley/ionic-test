@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>NRV Park Finder - Map</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding fullscreen>
+  <!-- hidden buttons utilized by dynamically generated leaflet markers -->
+  <button *ngFor="let park of Data.GetParks()" ng-show="false" menuToggle="right" id="toggleRightMenu{{park.Id}}" (click)="SetActivePark(park)"></button>
+  <div id="mapid"></div>
+</ion-content>

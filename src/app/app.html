@@ -1,0 +1,52 @@
+<ion-menu [content]="content" side="left" id="mainMenu">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Menu</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+      <ion-list-header><ion-icon name="home"></ion-icon> Page</ion-list-header>
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+        <!--ion-icon name="{{pageIcons[p.title]}}"></ion-icon-->   {{p.title}}
+      </button>
+    </ion-list>
+    <ion-list *ngIf="listActive">
+      <ion-list-header><ion-icon name="reorder"></ion-icon> Sort Order</ion-list-header>
+      <button menuClose ion-item (click)="applySort('alphabetical')">
+        <!--ion-icon name="reorder"></ion-icon-->   Alphabetical
+      </button>
+      <button menuClose ion-item (click)="applySort('distance')">
+        <!--ion-icon name="reorder"></ion-icon-->   Distance
+      </button>
+    </ion-list>
+    <ion-list>
+      <ion-list-header><ion-icon name="funnel"></ion-icon> Filter</ion-list-header>
+      <!--label ion-item class="item item-input">
+          <span class="input-label">To</span>
+          <input type="text" />
+          <input type="button" />
+      </label-->
+      <button menuClose ion-item *ngFor="let filter of data.GetFilters()" ng-class="{'button-positive':filter.IsActive}" (click)="applyFilter(filter)">
+        <!--ion-icon name="{{filterIcons[filter.Name]}}"></ion-icon-->   {{filter.Name}}
+      </button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-menu [content]="content" side="right" id="parkDetails">
+  <ion-header>
+      <ion-toolbar>
+        <ion-title>{{data.ActivePark.Name}}</ion-title>
+      </ion-toolbar>
+      <ion-list>
+        <ion-item *ngFor="let amenity of data.ActivePark.Amenities">
+          {{amenity.Name}}
+        </ion-item>
+      </ion-list>
+    </ion-header>
+</ion-menu>
+
+<!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>
