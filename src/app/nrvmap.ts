@@ -7,6 +7,7 @@ export class NRVMap {
     public Map: L.Map;
     public Layer: L.TileLayer;
     public Markers: Array<L.marker> = [];
+    public UserLocation: L.marker;
     public IndexedMarkers: {[key: number]: L.marker} = {};
     public Filter: IFilter = null;
 
@@ -33,6 +34,16 @@ export class NRVMap {
 
     public FitBounds() {
         var group = new L.featureGroup(this.Markers.filter(marker => marker._map != null));
+        if(typeof(this.UserLocation) !== 'undefined') {
+            group.addLayer(this.UserLocation);
+        }
         this.Map.fitBounds(group.getBounds(), {padding: [50, 50]});
+    }
+
+    public SetUserLocation(position) {
+        console.log(position);
+        this.UserLocation = new L.marker([position.coords.latitude, position.coords.longitude]).addTo(this.Map);
+        this.UserLocation.bindPopup("<h2>You</h2>");
+        this.FitBounds();
     }
 }

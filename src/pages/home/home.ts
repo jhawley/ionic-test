@@ -7,6 +7,7 @@ import { Park } from '../../app/park'
 import { IFilter, AmenityFilter } from '../../app/filter'
 import { Amenity } from '../../app/amenity';
 import { IData } from '../../app/data';
+import { ViewController } from 'ionic-angular/navigation/view-controller';
 
 @Component({
   selector: 'page-home',
@@ -20,6 +21,10 @@ export class HomePage {
   constructor(public navParams: NavParams, platform: Platform, public events: Events) {
     events.subscribe('filter:updated', (filter) => {
       this.UpdateFilter(filter);
+    });
+
+    events.subscribe('userlocation:updated', (position) => {
+      this.Map.SetUserLocation(position);
     });
 
     this.Data = navParams.get('data');
@@ -48,7 +53,7 @@ export class HomePage {
       var parksVisible = new Set<number>();      
 
       for(let park of filter.Filter(this.Data.GetParks())) {
-          parksVisible.add(park.Id);
+        parksVisible.add(park.Id);
       }
 
       for(let park of this.Data.GetParks()) {
@@ -73,5 +78,9 @@ export class HomePage {
 
   public SetActivePark(park: Park) {
     this.Data.ActivePark = park;
+  }
+
+  public Search($scope) {
+    console.log($scope);
   }
 }

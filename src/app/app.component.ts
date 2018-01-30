@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -8,7 +8,8 @@ import { ListPage } from '../pages/list/list';
 import { Amenity } from './amenity';
 import { IData, MockData } from './data';
 import { NavController } from 'ionic-angular/navigation/nav-controller';
-import { IFilter } from './filter';
+import { IFilter, NoFilter } from './filter';
+import { AboutPage } from '../pages/about/about';
 
 @Component({
   templateUrl: 'app.html'
@@ -26,32 +27,53 @@ export class MyApp {
 
   listActive: boolean;
 
+  locationKnown: boolean;
+
+  hideExtra: boolean;
+
   pageIcons = {
-    'Map': 'home',
-    'List': 'list-box'
+    'Map': 'navigate',
+    'List': 'list-box',
+    'About': 'help'
   }
 
   filterIcons = {
-    'All': 'baseball',
+    'All': 'done-all',
     'Picnic': 'pizza',
     'Shelter': 'umbrella',
     'Picnic Tables': 'cube',
     'Hiking': 'trending-up'
   }
 
-  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events) {
+  constructor(public zone: NgZone, public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, public events: Events) {
     this.initializeApp();
 
     this.data = new MockData();
 
     this.pages = [
       { title: 'Map', component: HomePage },
-      { title: 'List', component: ListPage }
+      { title: 'List', component: ListPage },
+      { title: 'About', component: AboutPage }
     ];
 
     this.sort = "alphabetical";
 
     this.listActive = false;
+
+    this.hideExtra = true;
+
+    this.locationKnown = false;
+
+    this.zone = new NgZone({ enableLongStackTrace: false });
+
+    this.data.SetFilterActive(this.data.GetTopFilters()[0]);
+  }
+
+  requestLocation() {
+    navigator.geolocation.getCurrentPosition((position) => {
+      this.events.publish('userlocation:updated', position);
+      this.locationKnown = true;
+    });
   }
 
   initializeApp() {
@@ -77,6 +99,19 @@ export class MyApp {
     if(page.component == this.nav.getActive().component) { return; }
     this.listActive = page.component == ListPage;
     this.nav.setRoot(page.component, {data: this.data, filter: this.filter, sort: this.sort});
+  }
+
+  isPageActive(page) {
+    return this.nav.getActive() && this.nav.getActive().component === page.component;
+  }
+
+  toggleHideExtra() {
+    this.hideExtra = !this.hideExtra;
+  }
+
+  reset() {
+    this.hideExtra = true;
+    this.applyFilter(this.data.GetTopFilters()[0]);
   }
 }
 

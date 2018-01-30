@@ -1,5 +1,20 @@
 @import 'leaflet.css';
 
 page-home {
-    #mapid { height: 100%; width: 100%; }
+    #mapid { 
+        height: 100%; 
+        width: 100%; 
+        position: absolute;
+        top: 0;
+        left: 0;
+        /*float: left;*/
+    }
+}
+
+ion-header {
+    //max-width: 300px;
+    display: hidden !important;
+    opacity: 0.8;
+    position: relative;
+    float: top !important;
 }

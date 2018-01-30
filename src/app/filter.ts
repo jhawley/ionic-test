@@ -42,3 +42,12 @@ export class OrFilter implements IFilter {
         return Array.from(valid);
     }
 }
+
+export class NoFilter implements IFilter {
+    IsActive: boolean = false;
+    Name: string = "All";
+
+    public Filter(parks: Array<Park>): Array<Park> {
+        return parks;
+    }
+}

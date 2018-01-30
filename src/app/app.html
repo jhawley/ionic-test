@@ -7,17 +7,26 @@
 
   <ion-content>
     <ion-list>
+      <ion-list-header><ion-icon name="apps"></ion-icon> Actions</ion-list-header>
+      <button menuClose ion-item (click)="requestLocation()" [ngClass]="{'active-ion-list-button':locationKnown}">
+          <ion-icon name="locate" item-right></ion-icon>   Show my Location on Map
+      </button>
+      <button menuClose ion-item (click)="reset()">
+          <ion-icon name="refresh" item-right></ion-icon>   Reset
+      </button>
+    </ion-list> 
+    <ion-list>
       <ion-list-header><ion-icon name="home"></ion-icon> Page</ion-list-header>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        <!--ion-icon name="{{pageIcons[p.title]}}"></ion-icon-->   {{p.title}}
+      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)" [ngClass]="{'active-ion-list-button':isPageActive(p)}">
+        <ion-icon name="{{pageIcons[p.title]}}" item-right></ion-icon>   {{p.title}}
       </button>
     </ion-list>
     <ion-list *ngIf="listActive">
       <ion-list-header><ion-icon name="reorder"></ion-icon> Sort Order</ion-list-header>
-      <button menuClose ion-item (click)="applySort('alphabetical')">
+      <button menuClose ion-item (click)="applySort('alphabetical')" [ngClass]="{'active-ion-list-button':sort === 'alphabetical'}">
         <!--ion-icon name="reorder"></ion-icon-->   Alphabetical
       </button>
-      <button menuClose ion-item (click)="applySort('distance')">
+      <button menuClose ion-item (click)="applySort('distance')" [ngClass]="{'active-ion-list-button':sort === 'distance'}">
         <!--ion-icon name="reorder"></ion-icon-->   Distance
       </button>
     </ion-list>
@@ -28,8 +37,14 @@
           <input type="text" />
           <input type="button" />
       </label-->
-      <button menuClose ion-item *ngFor="let filter of data.GetFilters()" ng-class="{'button-positive':filter.IsActive}" (click)="applyFilter(filter)">
-        <!--ion-icon name="{{filterIcons[filter.Name]}}"></ion-icon-->   {{filter.Name}}
+      <button menuClose ion-item *ngFor="let filter of data.GetTopFilters()" [ngClass]="{'active-ion-list-button':filter.IsActive}" (click)="applyFilter(filter)">
+        <ion-icon name="{{filterIcons[filter.Name]}}" item-right></ion-icon>   {{filter.Name}}
+      </button>
+      <button ion-item (click)="toggleHideExtra()">
+        <ion-icon [hidden]="!hideExtra" name="add" item-right></ion-icon><ion-icon [hidden]="hideExtra" name="remove" item-right></ion-icon>   More...
+      </button>
+      <button [hidden]="hideExtra" class="indentedFilter" menuClose ion-item *ngFor="let filter of data.GetFilters()" [ngClass]="{'active-ion-list-button':filter.IsActive}" (click)="applyFilter(filter)">
+        {{filter.Name}}
       </button>
     </ion-list>
   </ion-content>
